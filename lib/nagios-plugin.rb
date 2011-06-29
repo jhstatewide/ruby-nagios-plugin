@@ -16,8 +16,27 @@ module Nagios
      	 @print = args[:print] || true
      	 @exit = args[:exit] || true
      	 @perfdata = Hash.new
+     	 
      	 # now, handle the arguments...
      	 @opts = OptionParser.new
+     	 @opts.on("-w", "--warning WARNING", "WARNING THRESHOLD") do |w|
+     	 	 @warning = w
+	 end
+	 @opts.on("-c", "--critical CRITICAL", "CRITICAL THRESHOLD") do |c|
+     	 	 @critical = c
+	 end
+     end
+     
+     def warning
+     	     @warning     
+     end
+     
+     def critical
+     	     @critical
+     end
+     
+     def parse_argv()
+     	     @opts.parse(ARGV)
      end
      
      def exit=(enabled)
