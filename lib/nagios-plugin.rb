@@ -1,3 +1,5 @@
+require 'optparse'
+
 $:.unshift(File.dirname(__FILE__)) unless
   $:.include?(File.dirname(__FILE__)) || $:.include?(File.expand_path(File.dirname(__FILE__)))
 
@@ -13,7 +15,9 @@ module Nagios
      	 @shortname = args[:shortname] || "Nagios::Plugin"
      	 @print = args[:print] || true
      	 @exit = args[:exit] || true
-     	 @perfdata = Hash.new     
+     	 @perfdata = Hash.new
+     	 # now, handle the arguments...
+     	 @opts = OptionParser.new
      end
      
      def exit=(enabled)
@@ -63,6 +67,11 @@ module Nagios
      	     do_exit(WARNING_STATE, message)
      end
      
+     def unknown(message)
+     	     @state = :UNKNOWN
+     	     do_exit(UNKNOWN_STATE, message)
+     end
+     
      def do_exit(status, message)
      	     @output = @shortname + " "
      	     case status
@@ -73,7 +82,7 @@ module Nagios
      	     when CRITICAL_STATE
      	     	     @output += "CRITICAL - "
      	     when UNKNOWN_STATE
-     	     	     @output += "UNKNOWN -"
+     	     	     @output += "UNKNOWN - "
      	     end
      	     @output += message
      	     # see if we have keys...
