@@ -107,9 +107,11 @@ module Nagios
      	     # see if we have keys...
      	     if @perfdata.keys.length > 0
      	     	     @output += " | "
+     	     	     outputs = []
      	     	     @perfdata.each_pair do |key, value|
-     	     	     	     @output += "#{key}=#{value[:data]}#{value[:uom]};#{value[:warning]};#{value[:critical]}"  
+     	     	     	     outputs << "#{key}=#{value[:data]}#{value[:uom]};#{value[:warning]};#{value[:critical]}"  
      	     	     end
+     	     	     @output += outputs.join(", ")
      	     end
      	     @output.strip!
      	     puts @output if @print
