@@ -11,12 +11,17 @@ module Nagios
      
      def initialize(args = {})
      	 @shortname = args[:shortname] || "Nagios::Plugin"
+     	 @print = args[:print] || true
+     	 @exit = args[:exit] || true
      	 @perfdata = Hash.new     
-     	 @exit = true
      end
      
      def exit=(enabled)
      	     @exit = enabled
+     end
+     
+     def print=(enabled)
+     	     @print = enabled
      end
      
      # actually does the check
@@ -78,8 +83,9 @@ module Nagios
      	     	     	     @output += "#{key}=#{value[:data]}#{value[:uom]};#{value[:warning]};#{value[:critical]}"  
      	     	     end
      	     end
-     	     exit(status) if @exit
      	     @output.strip!
+     	     puts @output if @print
+     	     exit(status) if @exit
      	     return @output
      end
      

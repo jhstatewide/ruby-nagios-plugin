@@ -12,6 +12,7 @@ class TestNagiosPlugin < Test::Unit::TestCase
   def setup
   	  @tp = TestPlugin.new(:shortname => "Waffles")
   	  @tp.exit = false
+  	  @tp.print = false
   end
   
   def test_critical
