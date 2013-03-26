@@ -13,8 +13,8 @@ module Nagios
      
      def initialize(args = {})
      	 @shortname = args[:shortname] || "Nagios::Plugin"
-     	 @print = args[:print] || true
-     	 @exit = args[:exit] || true
+       @print = args[:print].nil? ? true : args[:print]                                                                                                                                                                                  
+       @exit = args[:exit].nil? ?  true : args[:exit] 
      	 @perfdata = Hash.new
      	 
      	 # now, handle the arguments...
