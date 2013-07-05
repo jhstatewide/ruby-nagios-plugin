@@ -123,5 +123,29 @@ module Nagios
      	     return @output
      end
      
+      # returns true if value is within range
+      #10       < 0 or > 10, (outside the range of {0 .. 10})
+      #10:      < 10, (outside {10 .. inf})
+      #~:10     > 10, (outside the range of {-inf .. 10})
+      # 10:20   < 10 or > 20, (outside the range of {10 .. 20})
+      # @10:20  >= 10 and <= 20, (inside the range of {10 .. 20})
+      def range_match ( value, range )
+        return (value < 0 || value > range) if range.class != String
+
+        result = false
+        negate = (range =~ /^@(.*)/)
+        range  = $1 if negate
+        if range =~ /^(-?\d+)$/
+          result = (value < 0 || value > $1.to_i)
+        # untested from here to the end of the function
+        elsif range =~ /^(-?\d+):[~]?$/
+          result = (value < $1.to_i)
+        elsif range =~ /^~:(-?\d+)$/
+          result = (value > $1.to_i)
+        elsif range =~ /^(-?\d+):(-?\d+)$/
+          result = (value > $1.to_i && value < $2.to_i)
+        end
+        return negate ? !result : result
+      end
   end 
 end
