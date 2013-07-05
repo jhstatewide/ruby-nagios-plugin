@@ -25,6 +25,10 @@ module Nagios
 	 @opts.on("-c", "--critical CRITICAL", "CRITICAL THRESHOLD") do |c|
      	 	 @critical = c
 	 end
+       @opts.on_tail("-h", "--help", "Show this message") do
+         puts @opts
+         exit
+       end
      end
      
      def warning
