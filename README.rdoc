@@ -6,6 +6,63 @@
 
 This allows you to easily write Nagios plugins in Ruby.
 
+==== Example
+
+
+    #!/usr/bin/env ruby
+    require 'rubygems'
+    require 'nagios-plugin'
+    require 'time'
+
+    class MyNagiosCheck < Nagios::Plugin
+      # What should run when check is run
+      def run
+
+        # Get more options via arguments using the OptParse object.
+        # -w and -c for warning and critical thresholds are already included
+        @opts.on('-H', '--host HOST', 'Proxy server to check') do |h|
+          @proxy_host = h
+        end
+
+        # Init the argument parser
+        parse_argv
+
+        # Begin the check
+        begin
+
+          # Record the second when the check started to run
+          started_at=Time.now
+
+          # Run the commands you actually need for your check
+
+          some_ruby_code_to_run
+
+          # Calculate the run time
+          run_time = Time.now - started_at
+
+          # Add Performance data
+          add_perfdata(:field => "run time", :data => run_time, :critical => @critical, :warning => @warning, :uom => 'secs')
+
+          # Check the values against the thresholds
+          if run_time > @critical.to_f
+            critical("Took more than #{@critical}")
+          elsif run_time > @warning.to_f
+            warning("Took more than #{@warning}")
+          else
+            ok("Yay!")
+          end
+
+        # When the code has failed
+        rescue
+          critical("Check Failed!")
+        end
+      end
+    end
+
+    # Initialize and run the check!
+    @my_nagios_check = MyNagiosCheck.new(:shortname => 'my_nagios_check')
+    @my_nagios_check.run
+
 == LICENSE:
 
 (The MIT License)
